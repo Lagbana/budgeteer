@@ -20,6 +20,6 @@ const transactionSchema: Schema = new Schema(
   { timestamps: true }
 )
 
-export const Transaction: Model<ITransactionDocument> = model<
+export const Transactions: Model<ITransactionDocument> = model<
   ITransactionDocument
->('Transaction', transactionSchema)
+>('Transactions', transactionSchema)
