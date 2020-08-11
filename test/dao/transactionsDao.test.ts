@@ -12,7 +12,7 @@ describe(`TransactionsDAO CRUD testing`, () => {
     tDao = new TransactionsDao()
   })
 
-  it('should have a createTranctions method', () => {
+  it('should have createTranctions method', () => {
     expect(typeof tDao.createTransaction).toBe('function')
   })
 

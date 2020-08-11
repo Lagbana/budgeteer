@@ -25,6 +25,25 @@ class TransactionsRoute {
     this.router.post('/transactions', (req: Request, res: Response) =>
       this.createTransaction(req, res)
     )
+    this.router.get('/transactions', (req: Request, res: Response) =>
+      this.getTransactions(req, res)
+    )
+  }
+
+  /**
+   * retrieves all transactions 
+   * @param {Object} req - Request object
+   * @param {Object} res - Response object
+   * @returns any
+   * @throws - throws error if something goes wrong
+   *
+   */
+  async getTransactions (req: Request, res: Response) {
+    try {
+      res.json('hello, it got here')
+    } catch (err) {
+      throw err
+    }
   }
 
   /**
