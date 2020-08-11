@@ -1,4 +1,5 @@
-import * as mongoose from 'mongoose'
+import { Model } from 'mongoose'
+import { Transactions } from '../models/transactions'
 import { ITransactionDocument, ItransactionsDao } from '../typing'
 
 /**
@@ -8,10 +9,10 @@ import { ITransactionDocument, ItransactionsDao } from '../typing'
  */
 class TransactionsDao implements ItransactionsDao {
   options: any
-  transactions: mongoose.Model<ITransactionDocument>
+  transactions: Model<ITransactionDocument>
   constructor (options: any = {}) {
     this.options = options
-    this.transactions = mongoose.model('Transactions')
+    this.transactions = Transactions
   }
 
   /**

@@ -6,19 +6,17 @@
 // require('./models/otpModel')
 
 // require('dotenv').config()
-import express, {Application, Request, Response, NextFunction} from 'express'
+import express, { Application, Request, Response, NextFunction } from 'express'
 import logger from 'morgan'
 import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
 import compression from 'compression'
-
+import { initializeRoutes } from './routes'
 
 if (process.env.NODE_ENV === 'development') {
   const { config } = require('dotenv')
   config()
 }
-
-import { IConfig } from './typing'
 
 // Initialize the express application
 const app: Application = express()
@@ -50,14 +48,10 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/budget', {
 //   })
 // )
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
-  res.send('We made it here')
-})
+// app.get('/', (req: Request, res: Response, next: NextFunction) => {
+//   res.send('We made it here')
+// })
 
-const config: IConfig = {
-  port: Number(process.env.PORT) || 8080
-}
+initializeRoutes(app)
 
-app.listen(config.port, () => {
-  console.log(`App running on port ${config.port}!`)
-})
+export { app }
