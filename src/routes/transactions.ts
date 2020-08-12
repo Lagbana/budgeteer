@@ -31,7 +31,7 @@ class TransactionsRoute {
   }
 
   /**
-   * retrieves all transactions 
+   * retrieves all transactions
    * @param {Object} req - Request object
    * @param {Object} res - Response object
    * @returns any

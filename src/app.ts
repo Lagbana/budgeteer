@@ -18,6 +18,7 @@ if (process.env.NODE_ENV === 'development') {
   config()
 }
 
+
 // Initialize the express application
 const app: Application = express()
 
@@ -32,7 +33,7 @@ app.use(bodyParser.json())
 
 // Connect to mongoDB database running remotely or locally during development
 // Specify mongoDB connection option booleans
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/budget', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/budgeteer', {
   useNewUrlParser: true,
   useFindAndModify: false,
   useUnifiedTopology: true,
