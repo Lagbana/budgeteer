@@ -7,7 +7,7 @@ import { TransactionsRoute } from './transactions'
 // import {  } from '../services'
 
 /*
-    *Function: 
+    *Function:
     Initialize all routes
 */
 const initializeRoutes = (app: any) => {
