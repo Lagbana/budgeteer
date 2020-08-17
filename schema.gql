@@ -4,11 +4,19 @@
 # -----------------------------------------------
 
 type Mutation {
+  newBulkTransactions(bulks: [TransactionInputs!]!): Boolean!
   newTransaction(name: String!, value: Float!): Boolean!
 }
 
 type Query {
   getTransactions: [Transactions!]!
+}
+
+"""Transactions inputs"""
+input TransactionInputs {
+  id: ID!
+  name: String!
+  value: Float!
 }
 
 """Transactions Schema"""

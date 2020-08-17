@@ -30,13 +30,3 @@ export interface ItransactionsDao {
   createTransaction(context: any): Promise<ITransactionDocument>
   createBulkTransactions(context: []): Promise<Array<ITransactionDocument>>
 }
-
-/**
- * -----------------------------------------------------------------------
- *  Interface definition for the implementation of the transaction object
- * -----------------------------------------------------------------------
- */
-export interface ITransactionResolver {
-  getTransactions(): Promise<Array<ITransactionDocument>>
-  newTransaction(name: string, value: number): Promise<Boolean>
-}
