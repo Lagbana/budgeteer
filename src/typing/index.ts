@@ -22,7 +22,7 @@ export interface ITransactionDocument extends Document {
 
 /**
  * -----------------------------------------------------------------------
- *  Interface definition for the implementation of the transaction object
+ *  Interface definition for the implementation of the transaction DAO
  * -----------------------------------------------------------------------
  */
 export interface ItransactionsDao {
@@ -32,11 +32,53 @@ export interface ItransactionsDao {
 }
 
 /**
+ * -------------------------------------------------
+ *  Interface definition for the user object
+ * -------------------------------------------------
+ */
+export interface IUserDocument extends Document {
+  username: string
+  password: string
+}
+
+/**
+ * ---------------------------------------------------------------
+ *  Interface definition for the implementation of the user DAO
+ * ---------------------------------------------------------------
+ */
+export interface IUserDao {
+  getUser(id: string): Promise<IUserDocument | null>
+  createUser(username: string, password: string): Promise<IUserDocument>
+}
+
+/**
  * -----------------------------------------------------------------------
- *  Interface definition for the implementation of the transaction object
+ *  Interface definition for the implementation of the user service
  * -----------------------------------------------------------------------
  */
-export interface ITransactionResolver {
-  getTransactions(): Promise<Array<ITransactionDocument>>
-  newTransaction(name: string, value: number): Promise<Boolean>
+export interface IUserService {
+  retrieveUser(id: string): Promise<IUserDocument | null>
+  makeUser(username: string, password: string): Promise<IUserDocument>
+
+}
+
+/**
+ * ------------------------------------------------------------------------------
+ *  Interface definition for the UserService jwtPayload method parameter object
+ * ------------------------------------------------------------------------------
+ */
+export interface IjwtPayload {
+  _id?: string
+  username: string
+}
+
+/**
+ * -----------------------------------------------------
+ *  Interface definition for the user credential object
+ * -----------------------------------------------------
+ */
+export interface ICredentials {
+  _id?:string
+  username: string
+  password: string
 }
