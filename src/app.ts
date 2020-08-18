@@ -10,7 +10,7 @@ import express, { Application } from 'express'
 import logger from 'morgan'
 import bodyParser from 'body-parser'
 import compression from 'compression'
-import { initializeRoutes } from './routes'
+// import { initializeRoutes } from './routes'
 
 if (process.env.NODE_ENV === 'development') {
   const { config } = require('dotenv')
@@ -32,6 +32,6 @@ app.use(bodyParser.json())
 
 
 
-initializeRoutes(app)
+// initializeRoutes(app)
 
 export { app }

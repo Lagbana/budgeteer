@@ -1,8 +1,14 @@
 import { UserDao } from '../dao/userDao'
-import { IUserDocument, IUserService, IjwtPayload } from '../typing'
+import {
+  IUserDocument,
+  IUserService,
+  IjwtPayload,
+  ICredentials
+} from '../typing'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { isEmpty } from 'lodash'
+import e from 'express'
 
 /**
  * @constructor UserService
@@ -79,11 +85,11 @@ class UserService extends UserDao implements IUserService {
    * @return {Promise<{string}>} token
    */
   private async jwtPayload (context: IjwtPayload) {
-    const { id, username } = context
+    const { _id, username } = context
     try {
       const token = await jwt.sign(
         {
-          id,
+          _id,
           username,
           issuer: `budgeteer.api.internal`,
           aud: `budgeteer.client`
@@ -101,17 +107,69 @@ class UserService extends UserDao implements IUserService {
    * Compares input string with hashed string for validating user password
    * @param {string} password - input password string
    * @param {string} encryptPassword - hashed password stored in db
-   * @return {Promise<Boolean>}
+   * @return {Promise<Boolean>} - boolean
    * @throws {Error}
    */
-  private comparePasswords (
+  private async comparePasswords (
     password: string,
     encryptPassword: string
   ): Promise<Boolean> {
     try {
-      return bcrypt.compare(password, encryptPassword)
+      return await bcrypt.compare(password, encryptPassword)
     } catch (error) {
       throw error
+    }
+  }
+
+  /**
+   * Authenticates the user based on input parameters
+   * @param {Object} params - {username, password}
+   * @return {Promise<Object<string>>} - token
+   */
+  public async authenticate (context: ICredentials) {
+    try {
+      const { username, password } = context
+      let user: ICredentials[] = []
+      if (!isEmpty(username)) {
+        user = await this.getUserByCustomField({ username })
+      }
+      if (user.length > 0) {
+        const foundUser = user[0]
+        const encryptPassword = foundUser.password
+        const validCredentials = await this.comparePasswords(
+          password,
+          encryptPassword
+        )
+        if (validCredentials) {
+          return await this.jwtPayload(foundUser)
+        } else {
+          throw new Error(`Unauthorized`)
+        }
+      } else {
+        throw new Error(`Unauthorized`)
+      }
+    } catch (error) {
+      throw error
+    }
+  }
+
+  /**
+   * Generates an auth token for user authentication
+   * @param {Object} params - { username, password }
+   * @return {Object} { token }
+   * @throws {Error}
+   */
+  public async login (context: ICredentials) {
+    try {
+      let { username, password } = context
+      if (isEmpty(username) || isEmpty(password)) {
+        throw new Error('Bad request, inputs can not be empty.')
+      }
+      username = username.toLowerCase()
+      const auth = await this.authenticate({ username, password })
+      return auth
+    } catch (error) {
+      console.log(error)
     }
   }
 }

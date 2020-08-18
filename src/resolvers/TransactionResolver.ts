@@ -36,12 +36,11 @@ export class TransactionResolver {
 
   @Mutation(() => Boolean)
   async newBulkTransactions (
-    // @Arg('objects') objects: [TransactionSchema]
-   @Arg("bulks", _type => [TransactionInputs]) bulks: TransactionInputs[]
+   @Arg("bulk", _type => [TransactionInputs]) bulk: TransactionInputs[]
 
   ) {
     try {
-      await Transactions.insertMany(bulks)
+      await Transactions.insertMany(bulk)
     } catch (error) {
       console.log(error)
       return false

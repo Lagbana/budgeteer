@@ -4,7 +4,7 @@
 # -----------------------------------------------
 
 type Mutation {
-  newBulkTransactions(bulks: [TransactionInputs!]!): Boolean!
+  newBulkTransactions(bulk: [TransactionInputs!]!): Boolean!
   newTransaction(name: String!, value: Float!): Boolean!
 }
 
