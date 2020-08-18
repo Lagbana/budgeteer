@@ -2,7 +2,7 @@ import 'reflect-metadata'
 import { app } from './app'
 import mongoose from 'mongoose'
 import { ApolloServer } from 'apollo-server-express'
-import { TransactionResolver } from './resolvers/TransactionResolver'
+import { TransactionResolver, UserResolver } from './resolvers'
 import { buildSchema } from 'type-graphql'
 import { IConfig } from './typing'
 
@@ -25,7 +25,7 @@ const startServer = async (): Promise<void> => {
 
   const server = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [TransactionResolver],
+      resolvers: [TransactionResolver, UserResolver],
       emitSchemaFile: true
     })
   })

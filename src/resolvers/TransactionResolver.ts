@@ -2,8 +2,6 @@ import 'reflect-metadata'
 import { Resolver, Query, Mutation, Arg } from 'type-graphql'
 import { Transactions } from '../models/transactions'
 import {Transactions as TransactionSchema, TransactionInputs} from '../schema/TransactionSchema'
-import { GraphQLList } from 'graphql'
-
 
 @Resolver(TransactionSchema)
 export class TransactionResolver {
