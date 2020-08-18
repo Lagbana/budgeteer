@@ -56,7 +56,9 @@ class UserService extends UserDao implements IUserService {
       }
       username = username.toLowerCase()
       password = await this.encryptPassword(password)
-      const user = this.createUser(username, password)
+      console.log(password)
+      const user = await this.createUser(username, password)
+      console.log(user)
       return user
     } catch (err) {
       throw err
@@ -71,9 +73,12 @@ class UserService extends UserDao implements IUserService {
    */
   private async encryptPassword (password: string) {
     try {
-      const saltRounds = 23
+      const saltRounds = 10
       const salt = await bcrypt.genSalt(saltRounds)
-      return bcrypt.hash(password, salt)
+      console.time('hash')
+      const hashed = await bcrypt.hash(password, salt)
+      console.timeEnd('hash')
+      return hashed
     } catch (err) {
       throw err
     }

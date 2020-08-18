@@ -6,10 +6,12 @@
 type Mutation {
   newBulkTransactions(bulk: [TransactionInputs!]!): Boolean!
   newTransaction(name: String!, value: Float!): Boolean!
+  newUser(password: String!, username: String!): Boolean!
 }
 
 type Query {
   getTransactions: [Transactions!]!
+  getUser: User!
 }
 
 """Transactions inputs"""
@@ -24,4 +26,11 @@ type Transactions {
   id: ID!
   name: String!
   value: Float!
+}
+
+"""User Schema"""
+type User {
+  _id: ID!
+  password: String!
+  username: String!
 }

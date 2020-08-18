@@ -10,7 +10,7 @@ const userSchema: Schema = new Schema(
     },
     password: {
       type: String,
-      required: 'Enter an amount'
+      required: 'Enter a password'
     }
   }
 )

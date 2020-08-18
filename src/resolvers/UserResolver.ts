@@ -4,16 +4,19 @@ import { UserService } from '../services/userService'
 import { IUserService } from '../typing/index'
 import { User as UserSchema } from '../schema/UserSchema'
 
+const userService = new UserService()
+
 @Resolver(UserSchema)
 export class UserResolver {
   userService: IUserService
   options: {}
   constructor (options = {}) {
     this.options = options
-    this.userService = new UserService()
+    this.userService = userService
+    // this.userService = new UserService()
   }
 
-  @Query()
+  @Query(() => UserSchema)
   async getUser (userId: string) {
     try {
       const response = await this.userService.retrieveUser(userId)
@@ -23,16 +26,17 @@ export class UserResolver {
     }
   }
 
-  @Mutation()
+  @Mutation(() => Boolean)
   async newUser (
     @Arg('username') username: string,
     @Arg('password') password: string
   ) {
-    try {
+      try {
       await this.userService.makeUser(username, password)
     } catch (error) {
       console.log(error)
+      return false
     }
+    return true
   }
-
 }
