@@ -3,13 +3,22 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type LoginResponse {
+  _id: String!
+  token: String!
+}
+
 type Mutation {
+  login(password: String!, username: String!): LoginResponse!
   newBulkTransactions(bulk: [TransactionInputs!]!): Boolean!
   newTransaction(name: String!, value: Float!): Boolean!
+  newUser(password: String!, username: String!): Boolean!
 }
 
 type Query {
   getTransactions: [Transactions!]!
+  getUser(userId: String!): User!
+  test: String!
 }
 
 """Transactions inputs"""
@@ -24,4 +33,11 @@ type Transactions {
   id: ID!
   name: String!
   value: Float!
+}
+
+"""User Schema"""
+type User {
+  _id: ID!
+  password: String!
+  username: String!
 }

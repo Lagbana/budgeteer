@@ -6,11 +6,12 @@ const userSchema: Schema = new Schema(
     username: {
       type: String,
       trim: true,
+      unique: true,
       required: 'Enter your name'
     },
     password: {
       type: String,
-      required: 'Enter an amount'
+      required: 'Enter a password'
     }
   }
 )

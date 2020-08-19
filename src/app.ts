@@ -1,21 +1,8 @@
-// Register Mongoose Models
-// require('./models/userModel')
-// require('./models/companyModel')
-// require('./models/jobModel')
-// require('./models/videoModel')
-// require('./models/otpModel')
-
-// require('dotenv').config()
 import express, { Application } from 'express'
 import logger from 'morgan'
 import bodyParser from 'body-parser'
 import compression from 'compression'
-// import { initializeRoutes } from './routes'
-
-if (process.env.NODE_ENV === 'development') {
-  const { config } = require('dotenv')
-  config()
-}
+import 'dotenv/config'
 
 // Initialize the express application
 const app: Application = express()
