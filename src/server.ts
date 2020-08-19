@@ -27,7 +27,8 @@ const startServer = async (): Promise<void> => {
     schema: await buildSchema({
       resolvers: [TransactionResolver, UserResolver],
       emitSchemaFile: true
-    })
+    }),
+    context: ({req, res}) => ({req, res})
   })
 
   server.applyMiddleware({ app })

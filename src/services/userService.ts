@@ -6,9 +6,8 @@ import {
   ICredentials
 } from '../typing'
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
 import { isEmpty } from 'lodash'
-import e from 'express'
+import { createAccessToken } from '../utils/auth'
 
 /**
  * @constructor UserService
@@ -49,17 +48,23 @@ class UserService extends UserDao implements IUserService {
   public async makeUser (
     username: string,
     password: string
-  ): Promise<IUserDocument> {
+  ): Promise<IUserDocument | string> {
     try {
       if (isEmpty(username) || isEmpty(password)) {
         throw new Error('No empty fields allowed')
       }
       username = username.toLowerCase()
-      password = await this.encryptPassword(password)
-      console.log(password)
-      const user = await this.createUser(username, password)
-      console.log(user)
-      return user
+
+      // Check to see if the user exists before creating a new user
+      let existingUser = await this.getUserByCustomField({ username })
+      if (existingUser.length > 0) {
+        console.log(`This username is already taken`)
+        return `This username is already taken`
+      } else {
+        password = await this.encryptPassword(password)
+        const user = await this.createUser(username, password)
+        return user
+      }
     } catch (err) {
       throw err
     }
@@ -75,9 +80,7 @@ class UserService extends UserDao implements IUserService {
     try {
       const saltRounds = 10
       const salt = await bcrypt.genSalt(saltRounds)
-      console.time('hash')
       const hashed = await bcrypt.hash(password, salt)
-      console.timeEnd('hash')
       return hashed
     } catch (err) {
       throw err
@@ -92,17 +95,8 @@ class UserService extends UserDao implements IUserService {
   private async jwtPayload (context: IjwtPayload) {
     const { _id, username } = context
     try {
-      const token = await jwt.sign(
-        {
-          _id,
-          username,
-          issuer: `budgeteer.api.internal`,
-          aud: `budgeteer.client`
-        },
-        String(process.env.JWT_SECRET),
-        { expiresIn: '1h' }
-      )
-      return { token }
+      const token = createAccessToken({_id, username})
+      return { _id, token }
     } catch (error) {
       throw error
     }
@@ -151,7 +145,8 @@ class UserService extends UserDao implements IUserService {
           throw new Error(`Unauthorized`)
         }
       } else {
-        throw new Error(`Unauthorized`)
+        const response:string = `This user does not exist`
+        return response
       }
     } catch (error) {
       throw error

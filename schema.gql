@@ -3,7 +3,13 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+type LoginResponse {
+  _id: String!
+  token: String!
+}
+
 type Mutation {
+  login(password: String!, username: String!): LoginResponse!
   newBulkTransactions(bulk: [TransactionInputs!]!): Boolean!
   newTransaction(name: String!, value: Float!): Boolean!
   newUser(password: String!, username: String!): Boolean!
@@ -11,7 +17,8 @@ type Mutation {
 
 type Query {
   getTransactions: [Transactions!]!
-  getUser: User!
+  getUser(userId: String!): User!
+  test: String!
 }
 
 """Transactions inputs"""

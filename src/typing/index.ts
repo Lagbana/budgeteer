@@ -1,4 +1,5 @@
 import { Document } from 'mongoose'
+import { Request, Response } from 'express'
 
 /**
  * ------------------------------------------
@@ -7,6 +8,17 @@ import { Document } from 'mongoose'
  */
 export interface IConfig {
   port: number
+}
+
+/**
+ * ------------------------------------------
+ * Interface definition for the express objects
+ * ------------------------------------------
+ */
+export interface IContext {
+  req: Request
+  res: Response
+  payload?: TAccessToken
 }
 
 /**
@@ -52,14 +64,27 @@ export interface IUserDao {
 }
 
 /**
+ * Refresh token type
+ */
+export type TRefreshToken = { _id: string | undefined; token: string }
+
+/**
+ * Access token type
+ */
+export type TAccessToken = {
+  _id: string | undefined
+  username: string
+}
+
+/**
  * -----------------------------------------------------------------------
  *  Interface definition for the implementation of the user service
  * -----------------------------------------------------------------------
  */
 export interface IUserService {
   retrieveUser(id: string): Promise<IUserDocument | null>
-  makeUser(username: string, password: string): Promise<IUserDocument>
-
+  makeUser(username: string, password: string): Promise<IUserDocument | string>
+  login(context: ICredentials): Promise<TRefreshToken | string | undefined>
 }
 
 /**
@@ -78,7 +103,7 @@ export interface IjwtPayload {
  * -----------------------------------------------------
  */
 export interface ICredentials {
-  _id?:string
+  _id?: string
   username: string
   password: string
 }
