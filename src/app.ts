@@ -18,7 +18,4 @@ app.use(bodyParser.json())
 // app.use(express.static('public'))
 
 
-
-// initializeRoutes(app)
-
 export { app }

@@ -51,6 +51,7 @@ export interface ItransactionsDao {
 export interface IUserDocument extends Document {
   username: string
   password: string
+  tokenVersion?: number
 }
 
 /**
@@ -60,13 +61,13 @@ export interface IUserDocument extends Document {
  */
 export interface IUserDao {
   getUser(id: string): Promise<IUserDocument | null>
-  createUser(username: string, password: string): Promise<IUserDocument>
+  createUser(username: string, password: string ): Promise<IUserDocument>
 }
 
 /**
  * Refresh token type
  */
-export type TRefreshToken = { _id: string | undefined; token: string }
+export type TRefreshToken = { _id: string | undefined; token?: string; tokenVersion?: number }
 
 /**
  * Access token type
@@ -85,6 +86,7 @@ export interface IUserService {
   retrieveUser(id: string): Promise<IUserDocument | null>
   makeUser(username: string, password: string): Promise<IUserDocument | string>
   login(context: ICredentials): Promise<TRefreshToken | string | undefined>
+  revokeRefreshToken (userId: string): Promise< true | undefined>
 }
 
 /**
@@ -95,6 +97,7 @@ export interface IUserService {
 export interface IjwtPayload {
   _id?: string
   username: string
+  tokenVersion?: number
 }
 
 /**
@@ -106,4 +109,6 @@ export interface ICredentials {
   _id?: string
   username: string
   password: string
+  tokenVersion?: number
+
 }
