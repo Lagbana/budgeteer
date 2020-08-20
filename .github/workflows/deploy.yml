@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x] # Only run the 12.x build
+        node-version: [12.x] 
 
     steps:
       - uses: actions/checkout@v1
@@ -19,7 +19,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install -g yarn
-      - name: yarn install and test
-        run: |
-          yarn
-          yarn test
+      - run: yarn
+      - run: yarn test
+
