@@ -2,7 +2,7 @@ import { sign } from 'jsonwebtoken'
 import { TRefreshToken, TAccessToken } from '../typing'
 
 export const createRefreshToken = (user: TRefreshToken) => {
-  return sign({ userId: user._id }, String(process.env.REFRESH_TOKEN), {
+  return sign({ userId: user._id, tokenVersion: user.tokenVersion }, String(process.env.REFRESH_TOKEN_SECRET), {
     expiresIn: '7d'
   })
 }
@@ -15,7 +15,7 @@ export const createAccessToken = (context: TAccessToken) => {
       issuer: `budgeteer.api.internal`,
       aud: `budgeteer.client`
     },
-    Buffer.from(String(process.env.ACCESS_TOKEN), 'base64'),
+    Buffer.from(String(process.env.ACCESS_TOKEN_SECRET), 'base64'),
     { expiresIn: '1h' }
   )
 }

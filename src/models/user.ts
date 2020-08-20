@@ -1,5 +1,6 @@
 import { Schema, Model, model } from 'mongoose'
 import { IUserDocument } from '../typing'
+import { number } from 'yup'
 
 const userSchema: Schema = new Schema(
   {
@@ -12,6 +13,10 @@ const userSchema: Schema = new Schema(
     password: {
       type: String,
       required: 'Enter a password'
+    },
+    tokenVersion: {
+      type: Number,
+      default: 0
     }
   }
 )

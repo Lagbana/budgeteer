@@ -1,18 +1,24 @@
-name: budgeteer CI/CD
+name: Budgeteer CI
 
 on:
-  pull_request:
-    branches: [ master ]
+pull_request:
+branches: [master]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x] 
+
     steps:
-      - uses: actions/checkout@v2
-      
-      - name: 'Setup Node.js'
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
-      - run: npm ci
-      - run: npm test
+          node-version: ${{ matrix.node-version }}
+      - run: npm install -g yarn
+      - run: yarn
+      - run: yarn test
+

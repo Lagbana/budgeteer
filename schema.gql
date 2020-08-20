@@ -13,11 +13,13 @@ type Mutation {
   newBulkTransactions(bulk: [TransactionInputs!]!): Boolean!
   newTransaction(name: String!, value: Float!): Boolean!
   newUser(password: String!, username: String!): Boolean!
+  revokeRefreshTokenForUser(userId: String!): Boolean!
 }
 
 type Query {
   getTransactions: [Transactions!]!
   getUser(userId: String!): User!
+  hello: String!
   test: String!
 }
 

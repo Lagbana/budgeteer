@@ -56,7 +56,7 @@ class UserDao implements IUserDao {
     password: string
   ): Promise<IUserDocument> {
     try {
-      const user = this.user.create({ username, password })
+      const user = await this.user.create({ username, password })
       return user
     } catch (err) {
       throw err

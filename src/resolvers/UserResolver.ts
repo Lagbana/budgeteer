@@ -7,7 +7,8 @@ import {
   ObjectType,
   Field,
   Ctx,
-  UseMiddleware
+  UseMiddleware,
+  Int
 } from 'type-graphql'
 import { ApolloError } from 'apollo-server-express'
 import { UserService } from '../services/userService'
@@ -16,6 +17,7 @@ import { User as UserSchema } from '../schema/UserSchema'
 import { isEmpty } from 'lodash'
 import { createRefreshToken } from '../utils/auth'
 import { isAuthenticated } from '../utils/isAuthenticated'
+import { sendRefreshToken } from '../utils/sendRefreshToken'
 
 @ObjectType()
 class LoginResponse {
@@ -33,6 +35,19 @@ export class UserResolver {
   constructor (options = {}) {
     this.options = options
     this.userService = new UserService()
+  }
+
+  @Query(() => String)
+  hello() {
+    return 'This test query worked'
+  }
+
+  @Mutation(() => Boolean)
+  revokeRefreshTokenForUser(
+    @Arg('userId') userId: string
+  ) {
+    const response = this.userService.revokeRefreshToken(userId)
+    return response
   }
 
   @Query(() => String)
@@ -83,14 +98,13 @@ export class UserResolver {
         return new ApolloError(`Bad request, user inputs can not be empty`)
       }
       // Check to see if we receive the user object from the database
-      const user = await this.userService.login({ username, password })
-      if (typeof user !== 'object') {
+      const userAuth = await this.userService.login({ username, password })
+      if (typeof userAuth !== 'object') {
         return new ApolloError(`This user does not exist`)
       } else {
-        res.cookie(String(process.env.COOKIE_NAME), createRefreshToken(user), {
-          httpOnly: true
-        })
-        return user
+        // Set up cookie with refresh token and return userAuth object
+        sendRefreshToken(res, createRefreshToken(userAuth))
+        return userAuth
       }
     } catch (error) {
       console.log(error)

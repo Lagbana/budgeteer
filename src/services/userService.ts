@@ -8,6 +8,7 @@ import {
 import bcrypt from 'bcrypt'
 import { isEmpty } from 'lodash'
 import { createAccessToken } from '../utils/auth'
+import { User } from '../models/user'
 
 /**
  * @constructor UserService
@@ -93,10 +94,10 @@ class UserService extends UserDao implements IUserService {
    * @return {Promise<{string}>} token
    */
   private async jwtPayload (context: IjwtPayload) {
-    const { _id, username } = context
+    const { _id, username, tokenVersion } = context
     try {
-      const token = createAccessToken({_id, username})
-      return { _id, token }
+      const token = createAccessToken({ _id, username })
+      return { _id, token, tokenVersion }
     } catch (error) {
       throw error
     }
@@ -145,7 +146,7 @@ class UserService extends UserDao implements IUserService {
           throw new Error(`Unauthorized`)
         }
       } else {
-        const response:string = `This user does not exist`
+        const response: string = `This user does not exist`
         return response
       }
     } catch (error) {
@@ -166,8 +167,23 @@ class UserService extends UserDao implements IUserService {
         throw new Error('Bad request, inputs can not be empty.')
       }
       username = username.toLowerCase()
-      const auth = await this.authenticate({ username, password })
-      return auth
+      const userAuth = await this.authenticate({ username, password })
+      return userAuth
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  /**
+   * Generates an auth token for user authentication
+   * @param {Object} params - { username, password }
+   * @return {Object} { token }
+   * @throws {Error}
+   */
+  public async revokeRefreshToken (userId: string) {
+    try {
+      await User.findOneAndUpdate({ _id: userId }, { $inc: { 'tokenVersion': 1 } })
+      return true
     } catch (error) {
       console.log(error)
     }
