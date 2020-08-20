@@ -1,6 +1,8 @@
 name: budgeteer CI/CD
 
-on: [push, pull_request] # Run on Push and Pull Requests
+on:
+  pull_request:
+    branches: [master]
 
 jobs:
   test:
