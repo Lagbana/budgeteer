@@ -1,4 +1,4 @@
-name: Budgeteer CI
+name: Budgeteer CI-CD
 
 on:
   pull_request:
