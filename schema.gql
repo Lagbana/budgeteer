@@ -19,6 +19,7 @@ type Mutation {
 type Query {
   getTransactions: [Transactions!]!
   getUser(userId: String!): User!
+  hello: String!
   test: String!
 }
 

@@ -37,6 +37,11 @@ export class UserResolver {
     this.userService = new UserService()
   }
 
+  @Query(() => String)
+  hello() {
+    return 'This test query worked'
+  }
+
   @Mutation(() => Boolean)
   revokeRefreshTokenForUser(
     @Arg('userId') userId: string
