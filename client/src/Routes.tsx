@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import { Landing } from './pages/Landing'
-import { Home } from './pages/Home'
+import { Budget } from './pages/Budget'
 import { Login } from './pages/Login'
 import { Register } from './pages/Register'
 import { Trends } from './pages/Trends'
@@ -23,7 +23,7 @@ export const Routes: React.FC = () => {
         <Route exact path='/' component={Landing} />
         <Route exact path='/login' component={Login} />
         <Route exact path='/register' component={Register} />
-        <Route exact path='/home' component={Home} />
+        <Route exact path='/budget' component={Budget} />
         <Route exact path='/trends' component={Trends} />
       </Switch>
     </BrowserRouter>

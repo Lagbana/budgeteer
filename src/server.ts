@@ -5,6 +5,7 @@ import { ApolloServer } from 'apollo-server-express'
 import { TransactionResolver, UserResolver } from './resolvers'
 import { buildSchema } from 'type-graphql'
 import { IConfig } from './typing'
+import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import { verify } from 'jsonwebtoken'
 import { UserDao } from './dao/userDao'
@@ -12,7 +13,12 @@ import { createAccessToken, createRefreshToken } from './utils/auth'
 import { sendRefreshToken } from './utils/sendRefreshToken'
 
 // Set up cookie parser middleware
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}))
 app.use(cookieParser())
+
 
 /**
  * Special route for handling refreshing our jwt token. The cookie only works on this route and the token is resent
@@ -83,7 +89,7 @@ const startServer = async (): Promise<void> => {
     context: ({ req, res }) => ({ req, res })
   })
 
-  server.applyMiddleware({ app })
+  server.applyMiddleware({ app, cors: false })
 
   app.listen(config.port, () => {
     console.log(`App running on http://localhost:8080${server.graphqlPath}`)

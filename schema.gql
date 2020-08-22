@@ -41,5 +41,6 @@ type Transactions {
 type User {
   _id: ID!
   password: String!
+  tokenVersion: Float!
   username: String!
 }

@@ -182,7 +182,10 @@ class UserService extends UserDao implements IUserService {
    */
   public async revokeRefreshToken (userId: string) {
     try {
-      await User.findOneAndUpdate({ _id: userId }, { $inc: { 'tokenVersion': 1 } })
+      await User.findOneAndUpdate(
+        { _id: userId },
+        { $inc: { tokenVersion: 1 } }
+      )
       return true
     } catch (error) {
       console.log(error)

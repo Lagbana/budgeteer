@@ -5,6 +5,7 @@ import compression from 'compression'
 import 'dotenv/config'
 
 // Initialize the express application
+// const app = express()
 const app: Application = express()
 
 // Set up the middlewares
