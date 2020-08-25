@@ -17,10 +17,10 @@ type Mutation {
 }
 
 type Query {
+  auth: User!
   getTransactions: [Transactions!]!
   getUser(userId: String!): User!
   hello: String!
-  test: String!
 }
 
 """Transactions inputs"""
@@ -41,5 +41,6 @@ type Transactions {
 type User {
   _id: ID!
   password: String!
+  tokenVersion: Float!
   username: String!
 }

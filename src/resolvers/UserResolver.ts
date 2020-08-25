@@ -7,8 +7,7 @@ import {
   ObjectType,
   Field,
   Ctx,
-  UseMiddleware,
-  Int
+  UseMiddleware
 } from 'type-graphql'
 import { ApolloError } from 'apollo-server-express'
 import { UserService } from '../services/userService'
@@ -38,25 +37,26 @@ export class UserResolver {
   }
 
   @Query(() => String)
-  hello() {
+  hello () {
     return 'This test query worked'
   }
 
   @Mutation(() => Boolean)
-  revokeRefreshTokenForUser(
-    @Arg('userId') userId: string
-  ) {
+  revokeRefreshTokenForUser (@Arg('userId') userId: string) {
     const response = this.userService.revokeRefreshToken(userId)
     return response
   }
 
-  @Query(() => String)
+  @Query(() => UserSchema)
   @UseMiddleware(isAuthenticated)
-  test(
+  auth (
     // access the context payload
-    @Ctx() {payload}: IContext
+    @Ctx() { payload }: IContext
   ) {
-    return `your user id is ${payload?._id} and username is ${payload?.username}`
+    const response = { _id: payload?._id, username: payload?.username } 
+    return response
+    // return `{id: ${payload?._id}, username: ${payload?.username}}` || null
+    // return `your user id is ${payload?._id} and username is ${payload?.username}`
   }
 
   @Query(() => UserSchema)

@@ -5,6 +5,7 @@ import { ApolloServer } from 'apollo-server-express'
 import { TransactionResolver, UserResolver } from './resolvers'
 import { buildSchema } from 'type-graphql'
 import { IConfig } from './typing'
+import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import { verify } from 'jsonwebtoken'
 import { UserDao } from './dao/userDao'
@@ -12,6 +13,12 @@ import { createAccessToken, createRefreshToken } from './utils/auth'
 import { sendRefreshToken } from './utils/sendRefreshToken'
 
 // Set up cookie parser middleware
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+  })
+)
 app.use(cookieParser())
 
 /**
@@ -47,7 +54,7 @@ app.post('/refresh_token', async (req, res) => {
 
   // Check to see if the user token version and the payload token are the same
   if (user.tokenVersion !== payload.tokenVersion) {
-    return res.send({ok: false, accessToken: ''})
+    return res.send({ ok: false, accessToken: '' })
   }
 
   // Send a new refresh token - optional, but it allows active users to maintain cookie
@@ -83,7 +90,7 @@ const startServer = async (): Promise<void> => {
     context: ({ req, res }) => ({ req, res })
   })
 
-  server.applyMiddleware({ app })
+  server.applyMiddleware({ app, cors: false })
 
   app.listen(config.port, () => {
     console.log(`App running on http://localhost:8080${server.graphqlPath}`)

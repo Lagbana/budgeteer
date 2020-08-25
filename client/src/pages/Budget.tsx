@@ -1,13 +1,19 @@
 import React from 'react'
 import { useWindowSize } from '../utils/useWindowSize'
+import { BudgetMobile } from '../mobileComponents/BudgetMobile'
 
-export const Home = () => {
+
+export const Budget = () => {
+
   const [width] = useWindowSize()
 
   return (
     <div>
       {width <= 768 ? (
-        <div> Mobile Home Page </div>
+        <div>
+          <BudgetMobile />{' '}
+      
+        </div>
       ) : (
         <div> Desktop Home Page </div>
       )}

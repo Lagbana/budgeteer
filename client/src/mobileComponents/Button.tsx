@@ -17,16 +17,27 @@ interface props {
   bkColor?: string
   textColor: string
   width?: string
+  height?: string
 }
 
 export const Buttons = (props: props) => {
-  const { name, type, size, htmlType, textColor, bkColor, width } = props
+  const {
+    name,
+    type,
+    size,
+    htmlType,
+    textColor,
+    bkColor,
+    width,
+    height
+  } = props
 
   const styling: { [key: string]: React.CSSProperties } = {
     button: {
       backgroundColor: bkColor,
       width: width,
-      borderRadius: '0.35rem',
+      height: height,
+      borderRadius: '6px',
       border: 'none'
     },
     text: {

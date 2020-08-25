@@ -10,4 +10,7 @@ export class User {
 
   @Field()
   password: string
+
+  @Field()
+  tokenVersion: number
 }

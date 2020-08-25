@@ -61,13 +61,17 @@ export interface IUserDocument extends Document {
  */
 export interface IUserDao {
   getUser(id: string): Promise<IUserDocument | null>
-  createUser(username: string, password: string ): Promise<IUserDocument>
+  createUser(username: string, password: string): Promise<IUserDocument>
 }
 
 /**
  * Refresh token type
  */
-export type TRefreshToken = { _id: string | undefined; token?: string; tokenVersion?: number }
+export type TRefreshToken = {
+  _id: string | undefined
+  token?: string
+  tokenVersion?: number
+}
 
 /**
  * Access token type
@@ -86,7 +90,7 @@ export interface IUserService {
   retrieveUser(id: string): Promise<IUserDocument | null>
   makeUser(username: string, password: string): Promise<IUserDocument | string>
   login(context: ICredentials): Promise<TRefreshToken | string | undefined>
-  revokeRefreshToken (userId: string): Promise< true | undefined>
+  revokeRefreshToken(userId: string): Promise<true | undefined>
 }
 
 /**
@@ -110,5 +114,4 @@ export interface ICredentials {
   username: string
   password: string
   tokenVersion?: number
-
 }

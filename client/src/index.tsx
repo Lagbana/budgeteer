@@ -2,17 +2,38 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from '@apollo/react-hooks'
-import {Routes} from './Routes'
 import * as serviceWorker from './serviceWorker'
+import WebFont from 'webfontloader'
 import './App.css'
+import { getAccessToken } from './utils/accessToken'
+import { App } from './App'
+
+WebFont.load({
+  google: {
+    families: ['Comfortaa', 'Poppins:300,700']
+  }
+})
+
+// font-family: 'Comfortaa', cursive;
 
 const client = new ApolloClient({
-  uri: 'http://localhost:8080/graphql'
+  uri: 'http://localhost:8080/graphql',
+  credentials: 'include',
+  request: operation => {
+    const accessToken = getAccessToken()
+    if (accessToken) {
+      operation.setContext({
+        headers: {
+          authorization: `bearer ${accessToken}`
+        }
+      })
+    }
+  }
 })
 
 ReactDOM.render(
   <ApolloProvider client={client as any}>
-    <Routes />
+    <App />
   </ApolloProvider>,
   document.getElementById('root')
 )
