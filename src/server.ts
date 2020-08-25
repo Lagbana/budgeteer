@@ -13,12 +13,13 @@ import { createAccessToken, createRefreshToken } from './utils/auth'
 import { sendRefreshToken } from './utils/sendRefreshToken'
 
 // Set up cookie parser middleware
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
-}))
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+  })
+)
 app.use(cookieParser())
-
 
 /**
  * Special route for handling refreshing our jwt token. The cookie only works on this route and the token is resent
@@ -53,7 +54,7 @@ app.post('/refresh_token', async (req, res) => {
 
   // Check to see if the user token version and the payload token are the same
   if (user.tokenVersion !== payload.tokenVersion) {
-    return res.send({ok: false, accessToken: ''})
+    return res.send({ ok: false, accessToken: '' })
   }
 
   // Send a new refresh token - optional, but it allows active users to maintain cookie

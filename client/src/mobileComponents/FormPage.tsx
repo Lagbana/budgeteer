@@ -7,6 +7,8 @@ import {
   BackwardFilled
 } from '@ant-design/icons'
 import Logo from '../budgeteerLogo.svg'
+import { setAccessToken } from '../utils/accessToken'
+import { useAuthQuery } from '../generated/graphql'
 const { Content } = Layout
 
 const styling: { [key: string]: React.CSSProperties } = {
@@ -85,20 +87,28 @@ export const FormPage = (props: props) => {
     })
     const { data } = response
     const { newUser, login } = data
-  
-    console.log(login)
-    
+
+    // console.log(login.token)
+
     if (newUser && newUser !== true) {
       openNotification('error')
     }
 
-    history.push("/budget")
+    if (response && response.data) {
+      setAccessToken(login.token)
+    }
+
+    history.push('/budget')
   }
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo)
   }
 
+  const { data } = useAuthQuery()
+  if (data) {
+    history.push('/budget')
+  }
   return (
     <div>
       <Content style={styling.theme}>

@@ -16,12 +16,15 @@ export const isAuthenticated: MiddlewareFn<IContext> = ({ context }, next) => {
   try {
     const token = authorization.split(' ')[1]
     // verify the token is correct
-    const payload = verify(token, Buffer.from(String(process.env.ACCESS_TOKEN_SECRET), 'base64'))
+    const payload = verify(
+      token,
+      Buffer.from(String(process.env.ACCESS_TOKEN_SECRET), 'base64')
+    )
     // set payload to the context
     context.payload = payload as any
   } catch (error) {
     console.log(error)
-    throw new Error('not authenticated') 
+    throw new Error('not authenticated')
   }
 
   return next()

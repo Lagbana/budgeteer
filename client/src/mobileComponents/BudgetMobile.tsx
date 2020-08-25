@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Form, Layout, Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { FormItem } from '../mobileComponents/FormItem'
-
 import { Buttons } from '../mobileComponents/Button'
+import { useAuthQuery } from '../generated/graphql'
 const { Content } = Layout
 
 const styling: { [key: string]: React.CSSProperties } = {
@@ -44,8 +44,13 @@ const styling: { [key: string]: React.CSSProperties } = {
   }
 }
 
-// Form page component
+
 export const BudgetMobile = () => {
+  const { data } = useAuthQuery()
+  const result = data?.auth
+  console.log(result?.username)
+
+
   const context = [
     {
       transaction: 'random1',
@@ -83,11 +88,6 @@ export const BudgetMobile = () => {
 
   const [balance, setBalance] = useState(0)
   const [fields, setFields] = useState(context)
-
-  // useEffect(() => {
-
-
-  // }, [balance])
 
   const months = [
     'January',
@@ -164,53 +164,61 @@ export const BudgetMobile = () => {
 
   return (
     <div>
-      <Content style={styling.theme}>
-        <Content style={styling.container}>
-          <div>
-            <h2 style={styling.header}>
-              <span>{monthName} </span>budget
-            </h2>
-          </div>
-          <div>
-            <h3 style={styling.balance}>
-              Balance: $
-              <span>
-                {String(balance).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              </span>
-            </h3>
-          </div>
+        <Content style={styling.theme}>
+          <Content style={styling.container}>
+            <div>
+              <h2 style={styling.header}>
+                <span>{monthName} </span>budget
+              </h2>
+            </div>
+            <div>
+              <h4>{data?.auth ? `Welcome ${result?.username}` : ''}</h4>
+            </div>
+            <div>
+              <h3 style={styling.balance}>
+                Balance: $
+                <span>
+                  {String(balance).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                </span>
+              </h3>
+            </div>
 
-          <Form
-            name='budget form'
-            onFinish={onFinish}
-            autoComplete='off'
-            preserve={true}
-          >
-            <Form.List
-              name='transactions'
-              children={(fields, actions) => handleDisplay(fields, actions)}
-            />
+            <Form
+              name='budget form'
+              onFinish={onFinish}
+              autoComplete='off'
+              preserve={true}
+            >
+              <Form.List
+                name='transactions'
+                children={(fields, actions) => handleDisplay(fields, actions)}
+              />
 
-            <Form.Item>
-              <Button type='primary' htmlType='submit'>
-                Submit
-              </Button>
-            </Form.Item>
-          </Form>
+              <Form.Item>
+                <Button type='primary' htmlType='submit'>
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
 
-          <div style={styling.brandContainer}>
-            <Buttons
-              name='VIEW TRENDS'
-              type='primary'
-              size='large'
-              htmlType='submit'
-              bkColor='#353452'
-              textColor='white'
-              width='91.5vw'
-            />
-          </div>
+            <div style={styling.brandContainer}>
+              <Buttons
+                name='VIEW TRENDS'
+                type='primary'
+                size='large'
+                htmlType='submit'
+                bkColor='#353452'
+                textColor='white'
+                width='91.5vw'
+              />
+            </div>
+          </Content>
         </Content>
-      </Content>
     </div>
   )
 }
+
+// <Redirect to='/login' />
+// (() => {
+//   return <Redirect to='/login' />
+// })()

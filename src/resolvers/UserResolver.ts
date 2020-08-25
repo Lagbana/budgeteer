@@ -47,13 +47,16 @@ export class UserResolver {
     return response
   }
 
-  @Query(() => String)
+  @Query(() => UserSchema)
   @UseMiddleware(isAuthenticated)
-  test (
+  auth (
     // access the context payload
     @Ctx() { payload }: IContext
   ) {
-    return `your user id is ${payload?._id} and username is ${payload?.username}`
+    const response = { _id: payload?._id, username: payload?.username } 
+    return response
+    // return `{id: ${payload?._id}, username: ${payload?.username}}` || null
+    // return `your user id is ${payload?._id} and username is ${payload?.username}`
   }
 
   @Query(() => UserSchema)
