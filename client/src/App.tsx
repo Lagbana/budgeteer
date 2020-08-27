@@ -15,7 +15,7 @@ export const App: React.FC<Props> = () => {
       const { accessToken } = await context.json()
       setAccessToken(accessToken)
       setLoading(false)
-    })
+    }).catch(err => console.log(err))
   }, [])
 
   if (loading) {

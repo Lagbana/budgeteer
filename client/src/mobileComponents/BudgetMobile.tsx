@@ -1,10 +1,15 @@
 import React, { useState } from 'react'
-import { Form, Layout, Button } from 'antd'
+import { Form, Layout, Button, Tag, Row, Col } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { FormItem } from '../mobileComponents/FormItem'
 import { Buttons } from '../mobileComponents/Button'
-import { useAuthQuery } from '../generated/graphql'
+import { useAuthQuery, useLogoutMutation } from '../generated/graphql'
+import { setAccessToken } from '../utils/accessToken'
 const { Content } = Layout
+
+interface props {
+  history: any
+}
 
 const styling: { [key: string]: React.CSSProperties } = {
   container: {
@@ -45,11 +50,13 @@ const styling: { [key: string]: React.CSSProperties } = {
 }
 
 
-export const BudgetMobile = () => {
+
+export const BudgetMobile = (props: props) => {
+  const {history} = props
+  const [logout, { client }] = useLogoutMutation()
   const { data } = useAuthQuery()
   const result = data?.auth
-  console.log(result?.username)
-
+  const user = <Tag color='#87d068'>{result?.username}</Tag>
 
   const context = [
     {
@@ -164,61 +171,75 @@ export const BudgetMobile = () => {
 
   return (
     <div>
-        <Content style={styling.theme}>
-          <Content style={styling.container}>
-            <div>
-              <h2 style={styling.header}>
-                <span>{monthName} </span>budget
-              </h2>
-            </div>
-            <div>
-              <h4>{data?.auth ? `Welcome ${result?.username}` : ''}</h4>
-            </div>
-            <div>
-              <h3 style={styling.balance}>
-                Balance: $
-                <span>
-                  {String(balance).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                </span>
-              </h3>
-            </div>
+      <Content style={styling.theme}>
+        <Content style={styling.container}>
+          <div>
+            <h2 style={styling.header}>
+              <span>{monthName} </span>budget
+            </h2>
+          </div>
+          <Row style={{ paddingBottom: '3vh' }}>
+            <Col span={18}>
+              {data?.auth ? <h3>You are logged in as: {user}</h3> : ''}
+            </Col>
+            <Col span={6}>
+              <Button
+                danger={true}
+                size='small'
+                shape='round'
+                onClick={async () => {
+                  await logout()
+                  setAccessToken('')
+                  history.push('/login')
+                }}
+              >
+                Logout
+              </Button>
+            </Col>
+          </Row>
+          {/* <div style={{ paddingBottom: '3vh' }}>
+            {data?.auth ? <h3>You are logged in as: {user}</h3> : ''}
+          </div> */}
+          <div>
+            <h3 style={styling.balance}>
+              Balance: $
+              <span>
+                {String(balance).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              </span>
+            </h3>
+          </div>
 
-            <Form
-              name='budget form'
-              onFinish={onFinish}
-              autoComplete='off'
-              preserve={true}
-            >
-              <Form.List
-                name='transactions'
-                children={(fields, actions) => handleDisplay(fields, actions)}
-              />
+          <Form
+            name='budget form'
+            onFinish={onFinish}
+            autoComplete='off'
+            preserve={true}
+          >
+            <Form.List
+              name='transactions'
+              children={(fields, actions) => handleDisplay(fields, actions)}
+            />
 
-              <Form.Item>
-                <Button type='primary' htmlType='submit'>
-                  Submit
-                </Button>
-              </Form.Item>
-            </Form>
+            <Form.Item>
+              <Button type='primary' htmlType='submit'>
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
 
-            <div style={styling.brandContainer}>
-              <Buttons
-                name='VIEW TRENDS'
-                type='primary'
-                size='large'
-                htmlType='submit'
-                bkColor='#353452'
-                textColor='white'
-                width='91.5vw'
-              />
-            </div>
-          </Content>
+          <div style={styling.brandContainer}>
+            <Buttons
+              name='VIEW TRENDS'
+              type='primary'
+              size='large'
+              htmlType='submit'
+              bkColor='#353452'
+              textColor='white'
+              width='91.5vw'
+            />
+          </div>
         </Content>
+      </Content>
     </div>
   )
 }
-
-// <Redirect to='/login' />
-// (() => {
-//   return <Redirect to='/login' />
-// })()

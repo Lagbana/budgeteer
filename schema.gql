@@ -10,6 +10,7 @@ type LoginResponse {
 
 type Mutation {
   login(password: String!, username: String!): LoginResponse!
+  logout: Boolean!
   newBulkTransactions(bulk: [TransactionInputs!]!): Boolean!
   newTransaction(name: String!, value: Float!): Boolean!
   newUser(password: String!, username: String!): Boolean!
@@ -20,7 +21,7 @@ type Query {
   auth: User!
   getTransactions: [Transactions!]!
   getUser(userId: String!): User!
-  hello: String!
+  user: User
 }
 
 """Transactions inputs"""
