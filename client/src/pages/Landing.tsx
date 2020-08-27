@@ -73,6 +73,7 @@ export const Landing = ({ history }: props) => {
           <div style={{ width: '100vw' }}>
             <img
               src={Shape}
+              alt='line'
               style={{ width: '30vw', marginLeft: '35vw', marginRight: '35vw' }}
             />
           </div>

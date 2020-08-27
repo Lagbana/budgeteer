@@ -1,14 +1,29 @@
 import React, { useState } from 'react'
+// import React, { useState, useEffect, SetStateAction } from 'react'
 import { Form, Layout, Button, Tag, Row, Col } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { FormItem } from '../mobileComponents/FormItem'
 import { Buttons } from '../mobileComponents/Button'
-import { useAuthQuery, useLogoutMutation } from '../generated/graphql'
+import {
+  useAuthQuery,
+  useLogoutMutation
+  // useGetTransactionsQuery
+} from '../generated/graphql'
 import { setAccessToken } from '../utils/accessToken'
+// import { isEmpty } from 'lodash'
 const { Content } = Layout
 
 interface props {
   history: any
+}
+
+interface state {
+  transaction: string
+  amount: number
+  name: number
+  key: number
+  isListField: boolean
+  fieldKey: number
 }
 
 const styling: { [key: string]: React.CSSProperties } = {
@@ -49,13 +64,13 @@ const styling: { [key: string]: React.CSSProperties } = {
   }
 }
 
-
-
 export const BudgetMobile = (props: props) => {
-  const {history} = props
-  const [logout, { client }] = useLogoutMutation()
+  const { history } = props
+  const [logout] = useLogoutMutation()
   const { data } = useAuthQuery()
   const result = data?.auth
+  // const response = useGetTransactionsQuery()
+
   const user = <Tag color='#87d068'>{result?.username}</Tag>
 
   const context = [
@@ -93,8 +108,39 @@ export const BudgetMobile = (props: props) => {
     }
   ]
 
+  // const [appData, setAppData] = useState([
+  //   {
+  //     transaction: '',
+  //     amount: 1000,
+  //     name: -1,
+  //     key: -1,
+  //     isListField: false,
+  //     fieldKey: -1
+  //   }
+  // ])
   const [balance, setBalance] = useState(0)
   const [fields, setFields] = useState(context)
+
+  // useEffect(() => {
+  //   const budgetData = response.data?.getTransactions
+
+  //   const newArray: SetStateAction<state | any> = budgetData?.map(
+  //     (obj, index) => {
+  //       const newObj = {
+  //         transaction: obj.name,
+  //         amount: obj.value,
+  //         name: index,
+  //         key: index,
+  //         isListField: true,
+  //         fieldKey: index
+  //       }
+  //       return newObj
+  //     }
+  //   )
+
+  //   console.log(newArray)
+  //   setAppData([...appData, newArray])
+  // }, [])
 
   const months = [
     'January',
@@ -122,9 +168,9 @@ export const BudgetMobile = (props: props) => {
     setBalance(amount)
   }
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo)
-  }
+  // const onFinishFailed = (errorInfo: any) => {
+  //   console.log('Failed:', errorInfo)
+  // }
 
   const handleDisplay: any = () => {
     return (
@@ -147,6 +193,7 @@ export const BudgetMobile = (props: props) => {
             type='dashed'
             onClick={() => {
               const len = fields.length
+
               setFields([
                 ...fields,
                 {

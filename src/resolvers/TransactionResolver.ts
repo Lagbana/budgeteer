@@ -1,7 +1,10 @@
 import 'reflect-metadata'
 import { Resolver, Query, Mutation, Arg } from 'type-graphql'
 import { Transactions } from '../models/transactions'
-import {Transactions as TransactionSchema, TransactionInputs} from '../schema/TransactionSchema'
+import {
+  Transactions as TransactionSchema,
+  TransactionInputs
+} from '../schema/TransactionSchema'
 
 @Resolver(TransactionSchema)
 export class TransactionResolver {
@@ -34,8 +37,7 @@ export class TransactionResolver {
 
   @Mutation(() => Boolean)
   async newBulkTransactions (
-   @Arg("bulk", _type => [TransactionInputs]) bulk: TransactionInputs[]
-
+    @Arg('bulk', _type => [TransactionInputs]) bulk: TransactionInputs[]
   ) {
     try {
       await Transactions.insertMany(bulk)
