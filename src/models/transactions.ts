@@ -3,12 +3,12 @@ import { ITransactionDocument } from '../typing'
 
 const transactionSchema: Schema = new Schema(
   {
-    name: {
+    transaction: {
       type: String,
       trim: true,
       required: 'Enter a name for transaction'
     },
-    value: {
+    amount: {
       type: Number,
       required: 'Enter an amount'
     },

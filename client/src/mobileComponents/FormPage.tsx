@@ -103,11 +103,7 @@ export const FormPage = (props: props) => {
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo)
   }
-
-  // const { data } = useAuthQuery()
-  // if (data) {
-  //   history.push('/budget')
-  // }
+  
   return (
     <div>
       <Content style={styling.theme}>

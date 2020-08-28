@@ -13,7 +13,7 @@ export const Budget = ({ history }: props) => {
     <div>
       {width <= 768 ? (
         <div>
-          <BudgetMobile history={history}/>
+          <BudgetMobile history={history} />
         </div>
       ) : (
         <div> Desktop Home Page </div>

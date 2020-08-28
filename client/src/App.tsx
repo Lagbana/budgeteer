@@ -11,11 +11,13 @@ export const App: React.FC<Props> = () => {
     fetch('http://localhost:8080/refresh_token', {
       method: 'POST',
       credentials: 'include'
-    }).then(async context => {
-      const { accessToken } = await context.json()
-      setAccessToken(accessToken)
-      setLoading(false)
-    }).catch(err => console.log(err))
+    })
+      .then(async context => {
+        const { accessToken } = await context.json()
+        setAccessToken(accessToken)
+        setLoading(false)
+      })
+      .catch(err => console.log(err))
   }, [])
 
   if (loading) {

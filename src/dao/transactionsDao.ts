@@ -23,7 +23,7 @@ class TransactionsDao implements ItransactionsDao {
 
   async getTransactions (): Promise<Array<ITransactionDocument>> {
     try {
-      const transactions = this.transactions.find({}).sort({ date: -1 })
+      const transactions = await this.transactions.find({}).sort({ date: -1 })
       return transactions
     } catch (err) {
       throw err
@@ -51,7 +51,7 @@ class TransactionsDao implements ItransactionsDao {
    */
 
   async createBulkTransactions (
-    context: []
+    context: any[]
   ): Promise<Array<ITransactionDocument>> {
     try {
       const bulkTransactions = this.transactions.insertMany(context)

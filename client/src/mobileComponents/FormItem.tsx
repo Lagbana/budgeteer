@@ -14,7 +14,6 @@ interface props {
 export const FormItem = (props: props) => {
   const { field, transaction, funds, setFields, fields } = props
 
-
   const updateAmount = (amount: any) => {
     const newFields = fields.map((ctx: any) => {
       if (field.key === ctx.key) return { ...ctx, amount }

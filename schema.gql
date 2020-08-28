@@ -12,7 +12,7 @@ type Mutation {
   login(password: String!, username: String!): LoginResponse!
   logout: Boolean!
   newBulkTransactions(bulk: [TransactionInputs!]!): Boolean!
-  newTransaction(name: String!, value: Float!): Boolean!
+  newTransaction(amount: Float!, transaction: String!): Boolean!
   newUser(password: String!, username: String!): Boolean!
   revokeRefreshTokenForUser(userId: String!): Boolean!
 }
@@ -26,16 +26,15 @@ type Query {
 
 """Transactions inputs"""
 input TransactionInputs {
-  id: ID!
-  name: String!
-  value: Float!
+  amount: Float!
+  transaction: String!
 }
 
 """Transactions Schema"""
 type Transactions {
-  id: ID!
-  name: String!
-  value: Float!
+  _id: ID!
+  amount: Float!
+  transaction: String!
 }
 
 """User Schema"""

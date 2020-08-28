@@ -7,15 +7,12 @@ import {
   Redirect
 } from 'react-router-dom'
 
-export const ProtectedRoute: React.FC<RouteProps> = props => {
+export const ProtectedRoute: React.FC<RouteProps>  = props => {
   const { component: __, ...rest } = props
   const { data, loading } = useAuthQuery()
 
   const renderRoute = (routeProps: RouteComponentProps) => {
     const { component } = props
-
-    // @ts-ignore
-      console.log(loading)
       
     if (loading) {
       // loading screen
@@ -32,10 +29,3 @@ export const ProtectedRoute: React.FC<RouteProps> = props => {
 
   return <Route {...rest} render={renderRoute} />
 }
-
-// export const ProtectedRoute: React.FC<props> = (props) => {
-// //   const { history } = props
-//   const { data } = useAuthQuery()
-//     console.log(data)
-//   return !isEmpty(data) ? <>{props.children}</> : <div>You are not allowed here!!</div>
-// }

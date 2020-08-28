@@ -1,14 +1,29 @@
-import React, { useState } from 'react'
+import React, { useState, SetStateAction, useEffect } from 'react'
 import { Form, Layout, Button, Tag, Row, Col } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { FormItem } from '../mobileComponents/FormItem'
 import { Buttons } from '../mobileComponents/Button'
-import { useAuthQuery, useLogoutMutation } from '../generated/graphql'
+import {
+  useAuthQuery,
+  useLogoutMutation,
+  useGetTransactionsQuery,
+  useCreateBulkTransactionsMutation
+} from '../generated/graphql'
 import { setAccessToken } from '../utils/accessToken'
+
 const { Content } = Layout
 
 interface props {
   history: any
+}
+
+interface state {
+  transaction: string
+  amount: number
+  name: number
+  key: number
+  isListField: boolean
+  fieldKey: number
 }
 
 const styling: { [key: string]: React.CSSProperties } = {
@@ -49,52 +64,50 @@ const styling: { [key: string]: React.CSSProperties } = {
   }
 }
 
-
-
 export const BudgetMobile = (props: props) => {
-  const {history} = props
-  const [logout, { client }] = useLogoutMutation()
+  const { history } = props
+  // Logout mutation
+  const [logout] = useLogoutMutation()
+  // Get all transactions query
+  const response = useGetTransactionsQuery()
+  // Authentication query
   const { data } = useAuthQuery()
-  const result = data?.auth
-  const user = <Tag color='#87d068'>{result?.username}</Tag>
+  // Create bulk transactions mutation
+  const [createBulk] = useCreateBulkTransactionsMutation()
 
-  const context = [
-    {
-      transaction: 'random1',
-      amount: 1000,
-      name: 0,
-      key: 0,
-      isListField: true,
-      fieldKey: 0
-    },
-    {
-      transaction: 'random2',
-      amount: 3400,
-      name: 1,
-      key: 1,
-      isListField: true,
-      fieldKey: 1
-    },
-    {
-      transaction: 'random3',
-      amount: 1120,
-      name: 2,
-      key: 2,
-      isListField: true,
-      fieldKey: 2
-    },
-    {
-      transaction: 'random4',
-      amount: 1230,
-      name: 3,
-      key: 3,
-      isListField: true,
-      fieldKey: 2
-    }
-  ]
+  const result = data?.auth // data from authentication query
+  const budgetData = response.data?.getTransactions // array of all transactions data
 
   const [balance, setBalance] = useState(0)
-  const [fields, setFields] = useState(context)
+  const [fields, setFields]: any = useState([])
+
+  useEffect(() => {
+    const newArray: SetStateAction<state> | any = budgetData?.map(
+      (obj, index) => {
+        const newObj = {
+          transaction: obj.name,
+          amount: obj.value,
+          name: index,
+          key: index,
+          isListField: true,
+          fieldKey: index
+        }
+        return newObj
+      }
+    )
+
+    if (newArray) {
+      setFields(newArray)
+    }
+
+    const sumObject: any = budgetData?.reduce((acc: any, cur: any): any => ({
+      value: acc.value + cur.value
+    }))
+    if (sumObject) {
+      const { value } = sumObject
+      setBalance(value)
+    }
+  }, [budgetData])
 
   const months = [
     'January',
@@ -113,40 +126,44 @@ export const BudgetMobile = (props: props) => {
   const monthNumber = new Date().getMonth()
   const monthName = months[monthNumber]
 
-  const onFinish = (values: any) => {
+  const onFinish = async (values: any) => {
     const { transactions } = values
-    const sumObject = transactions.reduce((acc: any, cur: any) => ({
-      amount: acc.amount + cur.amount
-    }))
-    const { amount } = sumObject
-    setBalance(amount)
+    console.log(transactions)
+    // try {
+    //   const result = await createBulk(transactions)
+    //   console.log(result)
+    // } catch (error) {
+    //   console.log(error)
+    // }
   }
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo)
-  }
+  // decorate the name of the authenticated user
+  const user = <Tag color='#87d068'>{result?.username}</Tag>
 
   const handleDisplay: any = () => {
     return (
       <div>
         <Form.Item>
-          {fields.map((field: any, index: number) => {
-            return (
-              <FormItem
-                key={index}
-                field={field}
-                fields={fields}
-                setFields={setFields}
-                transaction={field.transaction}
-                funds={field.amount}
-              />
-            )
-          })}
+          {fields
+            ? fields.map((field: any, index: number) => {
+                return (
+                  <FormItem
+                    key={index}
+                    field={field}
+                    fields={fields}
+                    setFields={setFields}
+                    transaction={field.transaction}
+                    funds={field.amount}
+                  />
+                )
+              })
+            : null}
           <Button
             style={{ height: '6.40vh' }}
             type='dashed'
             onClick={() => {
               const len = fields.length
+
               setFields([
                 ...fields,
                 {
@@ -197,9 +214,7 @@ export const BudgetMobile = (props: props) => {
               </Button>
             </Col>
           </Row>
-          {/* <div style={{ paddingBottom: '3vh' }}>
-            {data?.auth ? <h3>You are logged in as: {user}</h3> : ''}
-          </div> */}
+
           <div>
             <h3 style={styling.balance}>
               Balance: $
