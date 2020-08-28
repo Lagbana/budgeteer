@@ -3,23 +3,23 @@ import { ObjectType, Field, ID, InputType } from 'type-graphql'
 @ObjectType({ description: 'Transactions Schema' })
 export class Transactions {
   @Field(() => ID)
-  id: string
+  _id?: string
 
   @Field()
-  name: string
+  transaction: string
 
   @Field()
-  value: number
+  amount: number
 }
 
 @InputType({ description: 'Transactions inputs' })
 export class TransactionInputs implements Partial<Transactions> {
-  @Field(() => ID)
-  id: string
+  // @Field(() => ID)
+  // _id?: string 
 
   @Field()
-  name: string
+  transaction: string
 
   @Field()
-  value: number
+  amount: number
 }

@@ -27,8 +27,8 @@ export interface IContext {
  * -------------------------------------------------
  */
 export interface ITransactionDocument extends Document {
-  name: string
-  value: number
+  transaction: string
+  amount: number
   date?: Date
 }
 
@@ -40,7 +40,7 @@ export interface ITransactionDocument extends Document {
 export interface ItransactionsDao {
   getTransactions(): Promise<Array<ITransactionDocument>>
   createTransaction(context: any): Promise<ITransactionDocument>
-  createBulkTransactions(context: []): Promise<Array<ITransactionDocument>>
+  createBulkTransactions(context: any[]): Promise<Array<ITransactionDocument>>
 }
 
 /**

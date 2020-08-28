@@ -5,13 +5,23 @@ import {
   Transactions as TransactionSchema,
   TransactionInputs
 } from '../schema/TransactionSchema'
+import { TransactionsDao } from '../dao'
+import { ItransactionsDao } from '../typing'
 
 @Resolver(TransactionSchema)
 export class TransactionResolver {
+  transactionsDao: ItransactionsDao
+  options: {}
+  constructor(options: {}) {
+    this.options = options
+    this.transactionsDao = new TransactionsDao()
+  }
+
   @Query(() => [TransactionSchema])
   async getTransactions () {
     try {
-      const response = await Transactions.find({}).sort({ date: -1 })
+      const response = await this.transactionsDao.getTransactions()
+      // const response = await Transactions.find({}).sort({ date: -1 })
       return response
     } catch (error) {
       console.log(error)
@@ -20,14 +30,18 @@ export class TransactionResolver {
 
   @Mutation(() => Boolean)
   async newTransaction (
-    @Arg('name') name: string,
-    @Arg('value') value: number
+    @Arg('transaction') transaction: string,
+    @Arg('amount') amount: number
   ) {
     try {
-      await Transactions.create({
-        name,
-        value
+      await this.transactionsDao.createTransaction({
+        transaction,
+        amount
       })
+      // await Transactions.create({
+      //   transaction,
+      //   amount
+      // })
     } catch (error) {
       console.log(error)
       return false
@@ -40,7 +54,8 @@ export class TransactionResolver {
     @Arg('bulk', _type => [TransactionInputs]) bulk: TransactionInputs[]
   ) {
     try {
-      await Transactions.insertMany(bulk)
+      await this.transactionsDao.createBulkTransactions(bulk)
+      // await Transactions.insertMany(bulk)
     } catch (error) {
       console.log(error)
       return false
