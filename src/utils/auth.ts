@@ -16,6 +16,6 @@ export const createAccessToken = (context: TAccessToken) => {
       aud: `budgeteer.client`
     },
     Buffer.from(String(process.env.ACCESS_TOKEN_SECRET), 'base64'),
-    { expiresIn: '1h' }
+    { expiresIn: '30m' }
   )
 }

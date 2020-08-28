@@ -19,7 +19,7 @@ app.use(
     credentials: true
   })
 )
-app.use(cookieParser())
+app.use('/refresh_token', cookieParser())
 
 /**
  * Special route for handling refreshing our jwt token. The cookie only works on this route and the token is resent

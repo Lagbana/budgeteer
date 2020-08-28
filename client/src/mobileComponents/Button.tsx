@@ -18,6 +18,8 @@ interface props {
   textColor: string
   width?: string
   height?: string
+  addBorder?: Boolean
+  onClick?: any
 }
 
 export const Buttons = (props: props) => {
@@ -29,7 +31,9 @@ export const Buttons = (props: props) => {
     textColor,
     bkColor,
     width,
-    height
+    height,
+    addBorder,
+    onClick
   } = props
 
   const styling: { [key: string]: React.CSSProperties } = {
@@ -38,7 +42,7 @@ export const Buttons = (props: props) => {
       width: width,
       height: height,
       borderRadius: '6px',
-      border: 'none'
+      border: addBorder ? '1.5px solid black' : 'none'
     },
     text: {
       fontWeight: 'bold',
@@ -47,7 +51,7 @@ export const Buttons = (props: props) => {
   }
 
   return (
-    <Button type={type} size={size} htmlType={htmlType} style={styling.button}>
+    <Button type={type} size={size} htmlType={htmlType} style={styling.button} onClick={onClick}>
       <span style={styling.text}>{name}</span>
     </Button>
   )

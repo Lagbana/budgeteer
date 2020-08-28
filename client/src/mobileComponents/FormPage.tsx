@@ -8,7 +8,6 @@ import {
 } from '@ant-design/icons'
 import Logo from '../budgeteerLogo.svg'
 import { setAccessToken } from '../utils/accessToken'
-import { useAuthQuery } from '../generated/graphql'
 const { Content } = Layout
 
 const styling: { [key: string]: React.CSSProperties } = {
@@ -105,17 +104,17 @@ export const FormPage = (props: props) => {
     console.log('Failed:', errorInfo)
   }
 
-  const { data } = useAuthQuery()
-  if (data) {
-    history.push('/budget')
-  }
+  // const { data } = useAuthQuery()
+  // if (data) {
+  //   history.push('/budget')
+  // }
   return (
     <div>
       <Content style={styling.theme}>
         <Content style={styling.container}>
           <div>
             <h2 style={styling.icon}>
-              <BackwardFilled />
+              <BackwardFilled onClick={() => history.push('/')}/>
             </h2>
           </div>
           <div>

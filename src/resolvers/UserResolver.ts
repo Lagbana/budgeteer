@@ -17,6 +17,7 @@ import { isEmpty } from 'lodash'
 import { createRefreshToken } from '../utils/auth'
 import { isAuthenticated } from '../utils/isAuthenticated'
 import { sendRefreshToken } from '../utils/sendRefreshToken'
+import { verify } from 'jsonwebtoken'
 
 @ObjectType()
 class LoginResponse {
@@ -36,11 +37,6 @@ export class UserResolver {
     this.userService = new UserService()
   }
 
-  @Query(() => String)
-  hello () {
-    return 'This test query worked'
-  }
-
   @Mutation(() => Boolean)
   revokeRefreshTokenForUser (@Arg('userId') userId: string) {
     const response = this.userService.revokeRefreshToken(userId)
@@ -53,10 +49,29 @@ export class UserResolver {
     // access the context payload
     @Ctx() { payload }: IContext
   ) {
-    const response = { _id: payload?._id, username: payload?.username } 
+    const response = { _id: payload?._id, username: payload?.username }
     return response
-    // return `{id: ${payload?._id}, username: ${payload?.username}}` || null
-    // return `your user id is ${payload?._id} and username is ${payload?.username}`
+  }
+
+  @Query(() => UserSchema, { nullable: true })
+  async user (@Ctx() context: IContext) {
+    const authorization = context.req.headers['authorization']
+
+    if (!authorization) {
+      return null
+    }
+
+    try {
+      const token = authorization.split(' ')[1]
+      const payload: any = verify(
+        token,
+        Buffer.from(String(process.env.ACCESS_TOKEN_SECRET), 'base64')
+      )
+      return await this.userService.retrieveUser(payload._id)
+    } catch (error) {
+      console.log(error)
+      return null
+    }
   }
 
   @Query(() => UserSchema)
@@ -109,5 +124,19 @@ export class UserResolver {
     } catch (error) {
       console.log(error)
     }
+  }
+
+  @Mutation(() => Boolean)
+  async logout (@Ctx() { req, res }: IContext) {
+    sendRefreshToken(res, "")
+    res.cookie('loj', '', {
+      expires: new Date(628021800000),
+      // maxAge: -1,
+      path: '/refresh_token'
+
+    })
+    // res.clearCookie('loj')
+
+    return true
   }
 }
