@@ -80,13 +80,14 @@ export const BudgetMobile = (props: props) => {
 
   const [balance, setBalance] = useState(0)
   const [fields, setFields]: any = useState([])
+  const [reload, setReload] = useState(false)
 
   useEffect(() => {
     const newArray: SetStateAction<state> | any = budgetData?.map(
       (obj, index) => {
         const newObj = {
-          transaction: obj.name,
-          amount: obj.value,
+          transaction: obj.transaction,
+          amount: obj.amount,
           name: index,
           key: index,
           isListField: true,
@@ -100,14 +101,18 @@ export const BudgetMobile = (props: props) => {
       setFields(newArray)
     }
 
-    const sumObject: any = budgetData?.reduce((acc: any, cur: any): any => ({
-      value: acc.value + cur.value
-    }))
-    if (sumObject) {
-      const { value } = sumObject
-      setBalance(value)
+    let sumObject: any
+    if (budgetData?.length! > 0) {
+      sumObject = budgetData?.reduce((acc: any, cur: any): any => ({
+        amount: acc.amount + cur.amount
+      }))
+      if (sumObject) {
+        const { amount } = sumObject
+        setBalance(amount)
+      }
     }
-  }, [budgetData])
+    setReload(false)
+  }, [budgetData, reload, balance])
 
   const months = [
     'January',
@@ -128,13 +133,16 @@ export const BudgetMobile = (props: props) => {
 
   const onFinish = async (values: any) => {
     const { transactions } = values
-    console.log(transactions)
-    // try {
-    //   const result = await createBulk(transactions)
-    //   console.log(result)
-    // } catch (error) {
-    //   console.log(error)
-    // }
+    try {
+      await createBulk({
+        variables: {
+          bulk: transactions
+        }
+      })
+    } catch (error) {
+      console.log(error)
+    }
+    setReload(true)
   }
 
   // decorate the name of the authenticated user

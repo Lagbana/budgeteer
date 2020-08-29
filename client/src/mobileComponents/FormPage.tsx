@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons'
 import Logo from '../budgeteerLogo.svg'
 import { setAccessToken } from '../utils/accessToken'
+import { isEmpty } from 'lodash'
 const { Content } = Layout
 
 const styling: { [key: string]: React.CSSProperties } = {
@@ -72,12 +73,22 @@ interface props {
 export const FormPage = (props: props) => {
   const { pageName, buttonName, actionHook, history } = props
 
-  const openNotification = (type: string) => {
-    // @ts-ignore
-    notification[type]({
-      message: 'Registration unsuccessful',
-      description: 'This username already exists'
-    })
+  const openNotification = (type: string, key: string) => {
+    if (key === 'register') {
+      // @ts-ignore
+      notification[type]({
+        key: key,
+        message: 'Registration unsuccessful',
+        description: 'This username already exists'
+      })
+    } else if (key === 'login') {
+      // @ts-ignore
+      notification[type]({
+        key: key,
+        message: 'Login unsuccessful',
+        description: 'Invalid username or password'
+      })
+    }
   }
 
   const onFinish = async (values: any) => {
@@ -87,17 +98,20 @@ export const FormPage = (props: props) => {
     const { data } = response
     const { newUser, login } = data
 
-    // console.log(login.token)
-
-    if (newUser && newUser !== true) {
-      openNotification('error')
+    if (isEmpty(newUser) && typeof newUser === 'object') {
+      openNotification('error', 'register')
+    } else if (!isEmpty(newUser) && typeof newUser === 'object') {
+      setAccessToken(newUser.token)
+      history.push('/budget')
     }
 
-    if (response && response.data) {
+    if (isEmpty(login) && typeof login === 'object') {
+      openNotification('error', 'login')
+    } else if (!isEmpty(login) && typeof login === 'object') {
       setAccessToken(login.token)
+      history.push('/budget')
     }
 
-    history.push('/budget')
   }
 
   const onFinishFailed = (errorInfo: any) => {
