@@ -88,7 +88,7 @@ export type TAccessToken = {
  */
 export interface IUserService {
   retrieveUser(id: string): Promise<IUserDocument | null>
-  makeUser(username: string, password: string): Promise<IUserDocument | string>
+  makeUser(username: string, password: string): Promise<TRefreshToken | string>
   login(context: ICredentials): Promise<TRefreshToken | string | undefined>
   revokeRefreshToken(userId: string): Promise<true | undefined>
 }

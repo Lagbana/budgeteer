@@ -1,6 +1,5 @@
 import 'reflect-metadata'
 import { Resolver, Query, Mutation, Arg } from 'type-graphql'
-import { Transactions } from '../models/transactions'
 import {
   Transactions as TransactionSchema,
   TransactionInputs
@@ -12,7 +11,7 @@ import { ItransactionsDao } from '../typing'
 export class TransactionResolver {
   transactionsDao: ItransactionsDao
   options: {}
-  constructor(options: {}) {
+  constructor (options: {}) {
     this.options = options
     this.transactionsDao = new TransactionsDao()
   }
@@ -21,7 +20,6 @@ export class TransactionResolver {
   async getTransactions () {
     try {
       const response = await this.transactionsDao.getTransactions()
-      // const response = await Transactions.find({}).sort({ date: -1 })
       return response
     } catch (error) {
       console.log(error)
@@ -38,10 +36,6 @@ export class TransactionResolver {
         transaction,
         amount
       })
-      // await Transactions.create({
-      //   transaction,
-      //   amount
-      // })
     } catch (error) {
       console.log(error)
       return false
@@ -54,8 +48,22 @@ export class TransactionResolver {
     @Arg('bulk', _type => [TransactionInputs]) bulk: TransactionInputs[]
   ) {
     try {
-      await this.transactionsDao.createBulkTransactions(bulk)
-      // await Transactions.insertMany(bulk)
+      // filter out repeated transaction objects
+      const map: any = {}
+      const filteredBulk = bulk.filter(item => {
+        const transaction = item.transaction
+        const amount = item.amount
+
+        if (!map[transaction]) {
+          map[transaction] = [amount]
+          return item
+        } else if (!map[transaction].includes(amount)) {
+          map[transaction].push(amount)
+          return item
+        }
+      })
+
+      await this.transactionsDao.createBulkTransactions(filteredBulk)
     } catch (error) {
       console.log(error)
       return false

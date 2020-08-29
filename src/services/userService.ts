@@ -49,7 +49,7 @@ class UserService extends UserDao implements IUserService {
   public async makeUser (
     username: string,
     password: string
-  ): Promise<IUserDocument | string> {
+  ) {
     try {
       if (isEmpty(username) || isEmpty(password)) {
         throw new Error('No empty fields allowed')
@@ -59,12 +59,15 @@ class UserService extends UserDao implements IUserService {
       // Check to see if the user exists before creating a new user
       let existingUser = await this.getUserByCustomField({ username })
       if (existingUser.length > 0) {
-        console.log(`This username is already taken`)
         return `This username is already taken`
       } else {
-        password = await this.encryptPassword(password)
-        const user = await this.createUser(username, password)
-        return user
+        // encrypt password
+        const encryptedPassword = await this.encryptPassword(password)
+        //create user
+        await this.createUser(username, encryptedPassword)
+        // authenticate user
+        const userAuth = await this.authenticate({ username, password })
+        return userAuth
       }
     } catch (err) {
       throw err

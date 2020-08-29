@@ -1,10 +1,14 @@
 import { sign } from 'jsonwebtoken'
 import { TRefreshToken, TAccessToken } from '../typing'
 
-export const createRefreshToken = (user: TRefreshToken) => {
-  return sign({ userId: user._id, tokenVersion: user.tokenVersion }, String(process.env.REFRESH_TOKEN_SECRET), {
-    expiresIn: '7d'
-  })
+export const createRefreshToken = (user: any) => {
+  return sign(
+    { userId: user._id, tokenVersion: user.tokenVersion },
+    String(process.env.REFRESH_TOKEN_SECRET),
+    {
+      expiresIn: '7d'
+    }
+  )
 }
 
 export const createAccessToken = (context: TAccessToken) => {

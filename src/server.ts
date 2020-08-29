@@ -85,7 +85,8 @@ const startServer = async (): Promise<void> => {
   const server = new ApolloServer({
     schema: await buildSchema({
       resolvers: [TransactionResolver, UserResolver],
-      emitSchemaFile: true
+      emitSchemaFile: true,
+      validate: false
     }),
     context: ({ req, res }) => ({ req, res })
   })

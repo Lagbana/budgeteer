@@ -9,11 +9,11 @@ type LoginResponse {
 }
 
 type Mutation {
-  login(password: String!, username: String!): LoginResponse!
+  login(password: String!, username: String!): LoginResponse
   logout: Boolean!
   newBulkTransactions(bulk: [TransactionInputs!]!): Boolean!
   newTransaction(amount: Float!, transaction: String!): Boolean!
-  newUser(password: String!, username: String!): Boolean!
+  newUser(password: String!, username: String!): LoginResponse
   revokeRefreshTokenForUser(userId: String!): Boolean!
 }
 

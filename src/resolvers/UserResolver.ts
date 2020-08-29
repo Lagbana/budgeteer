@@ -84,25 +84,8 @@ export class UserResolver {
     }
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => LoginResponse, { nullable: true })
   async newUser (
-    @Arg('username') username: string,
-    @Arg('password') password: string
-  ) {
-    try {
-      const createdFeedback = await this.userService.makeUser(
-        username,
-        password
-      )
-      const response = typeof createdFeedback === 'string' ? false : true
-      return response
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  @Mutation(() => LoginResponse)
-  async login (
     @Arg('username') username: string,
     @Arg('password') password: string,
     @Ctx() { res }: IContext
@@ -112,10 +95,35 @@ export class UserResolver {
       if (isEmpty(username) || isEmpty(password)) {
         return new ApolloError(`Bad request, user inputs can not be empty`)
       }
+      // Check to see if the user was successfully created
+      const userAuth = await this.userService.makeUser(username, password)
+      if (typeof userAuth !== 'object') {
+        return null
+      } else {
+        // Set up cookie with refresh token and return userAuth object
+        sendRefreshToken(res, createRefreshToken(userAuth))
+        return userAuth
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @Mutation(() => LoginResponse, { nullable: true })
+  async login (
+    @Arg('username') username: string,
+    @Arg('password') password: string,
+    @Ctx() { res }: IContext
+  ) {
+    try {
+      // Check to see that input fields are not empty
+      if (isEmpty(username) || isEmpty(password)) {
+        return null
+      }
       // Check to see if we receive the user object from the database
       const userAuth = await this.userService.login({ username, password })
       if (typeof userAuth !== 'object') {
-        return new ApolloError(`This user does not exist`)
+        return null
       } else {
         // Set up cookie with refresh token and return userAuth object
         sendRefreshToken(res, createRefreshToken(userAuth))
@@ -128,12 +136,11 @@ export class UserResolver {
 
   @Mutation(() => Boolean)
   async logout (@Ctx() { req, res }: IContext) {
-    sendRefreshToken(res, "")
+    sendRefreshToken(res, '')
     res.cookie('loj', '', {
       expires: new Date(628021800000),
       // maxAge: -1,
       path: '/refresh_token'
-
     })
     // res.clearCookie('loj')
 
